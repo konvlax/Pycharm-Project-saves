@@ -1,5 +1,5 @@
 import time
-
+import random
 # --- 1. база ---
 
 
@@ -23,6 +23,7 @@ class Sim:
         self.energy -= 10
         if self.hunger <= 0 or self.energy <= 0:
             self.is_alive = False
+
             print(f"{self.name} не выдержал и покинул мир. F.")
 
     def status(self):
@@ -107,19 +108,62 @@ class Homeless(Sim):
         self.hunger -= 7
 
 
+class Cat(Sim):
+    def __init__(self, name):
+        super().__init__(name)
+        self.live = 9
+
+    def tear_sofa(self, human):
+        print(f'{player.name} недоволен {self.name}. Диван поцарапан. Это стоило 10$')
+        human.energy -= 10
+        human.money -= 10
+
+    def eat(self):
+        print(f'Рыбка! Чиназес! {self.name} получает +30 голода')
+        self.hunger += 30
+
+    def cet_gud(self, human):
+        print(f"Кот ничего не натворил. {player.name} рад.")
+        human.energy += 30
+
+    def live_day(self):
+        self.energy -= 50
+        self.hunger -= 8
+
+    def live_use(self):
+        print('виталий возвращается.')
+        vitaliy.is_alive = True
+
+
+class Zombie:
+    def __init__(self, hp=1, damage=10):
+        self.damage = damage
+        self.hp = hp
+
+    def deal_damage(self):
+        print('зомби встретил на улице игрока и напал. Снято 10 $')
+        player.money -= 10
+
+
+
 # --- 3. игровой мир ---
+
 
 player = Human("алекс", "программист")
 doggo = Dog("боб")
 robo = Robot("Валера")
 mike = Homeless("майк")
+vitaliy = Cat('Виталий')
 
-household = [player, doggo, robo, mike]
+
+household = [player, doggo, robo, mike, vitaliy]
 day = 1
 print("Игра начинается 🚲🚲🚲")
 
 # --- 4. цикл (game loop) ---
 while True:
+
+    a = random.randint(0, 11)
     print(f"\n=== День {day} ===")
 
     game_over = False
@@ -127,8 +171,10 @@ while True:
         if sim not in household:
             if not sim.is_alive:
                 print(f"Потрачено: {sim.name} *YOU DIED* ")
+
     if game_over:
         break
+
     if mike.hunger <= 20:
         mike.anger(player)
     print(f"Деньги: {player.money}$")
@@ -144,6 +190,8 @@ while True:
     print("5. Попросить приготовить робота ужин")
     print("6. Починить робота")
     print("7. Покормить бездомного")
+    print("8. Покормить кота")
+    print("9. Посмотреть за котом (риск)")
     print("0. Выход")
 
     choice = input("Твой выбор: ")
@@ -166,6 +214,16 @@ while True:
         player.repair_robot(robo)
     elif choice == "7":
         player.feed_homeless(mike)
+    elif choice == "8":
+        vitaliy.eat()
+        player.money -= 10
+    elif choice == "9":
+        if a <= 4:
+            vitaliy.tear_sofa(player)
+            print('Не повезло ;(')
+        elif a >= 5:
+            vitaliy.cet_gud(player)
+            print('удача :D')
 
     elif choice == "0":
         print('ББ')
@@ -175,6 +233,10 @@ while True:
 
     print("\n наступает ночь. Все показатели упали.")
     time.sleep(1)
+    if vitaliy.is_alive is not True and vitaliy.live > 0:
+        print('виталий потратил 1 жизнь')
+        vitaliy.live_use()
+        vitaliy.live -= 1
     for sim in household:
         sim.live_day()
 
