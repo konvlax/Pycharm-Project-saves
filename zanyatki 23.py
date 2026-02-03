@@ -2,7 +2,9 @@ import time
 import random
 
 # --- 1. БАЗОВЫЙ КЛАСС (Основа для всех) ---
-polytion_chance = 10
+a = 10
+chance = random.randint(1, a)
+
 
 class Resident:
 
@@ -26,11 +28,18 @@ class Resident:
         """Пример полиморфизма: каждый житель по-разному реагирует на хлам"""
         pass
 
-    def polytion(self):
-        
+    def live_on_edge(self):
+        if self.hunger <= 10:
+            print(f'{self.name} на грани смерти от голода!')
+
+    def tired(self):
+        if self.energy <= 5:
+            print(f'{self.name} очень устал. Следующих ход пропущен.')
+            self.energy += 40
 
 
 class WorkerSim(Resident):
+
     def __init__(self, name, money):
         super().__init__(name)
         self.money = money
@@ -66,12 +75,31 @@ class LazySim(Resident):
         print(f'{self.name}: Какой мусор? Это просто помои')
 
 
+class RobotSim(Resident):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def react_to_mess(self):
+        if self.hunger > 30:
+            print('Робот-пылесос: Убираю мусор. -30% заряда')
+            self.hunger -= 30
+        elif self.hunger <= 30:
+            pass
+
+    def status(self):
+        return f"{self.name} | 💡 Заряд: {self.hunger} | 🤞 Уровень веры в людей: {self.energy}"
+
+
+
 worker = WorkerSim('работяга Петрович', 100)
 lazy_guy = LazySim('Ларри (ленивец)')
-roommates = [worker, lazy_guy]
+Robo = RobotSim('Робот - пылесос')
+roommates = [worker, lazy_guy, Robo]
 day = 1
-is_messy = True
+is_messy = False
 print('СИМУЛЯТОР КОММУНАЛКИ ЗАПУЩЕН')
+chance_2 = 10
+
 
 while True:
     print(f"\n=== День {day} ===")
@@ -82,7 +110,7 @@ while True:
 
     print(f"Деньги Петровича: {worker.money} | Состояние: {'ХЛАМ' if is_messy else 'Чисто'}")
     for r in roommates:
-        print(r.status())
+            print(r.status())
 
     print('\n ВАШ ВЫБОР')
     print('1. Петрович: Пойти на работу (+150$)')
@@ -94,6 +122,7 @@ while True:
     choice = input('Действие: ')
     if choice == '1':
         worker.work()
+        is_messy = True
     elif choice == '2':
         if worker.money >= 50:
             worker.money -= 50
@@ -101,7 +130,7 @@ while True:
             for r in roommates:
                 r.hunger += 40
 
-            print('Все поели')
+            print('Все поели, Петрович зарядил робота - пылесоса')
         else:
             print('ноу мани')
     elif choice == '3':
@@ -114,9 +143,11 @@ while True:
         print(f'ларри клянчит деньги. Петрович в ярости.')
         worker.energy -= 5
     elif choice == '5':
-        print('Петрович вынес весь мусор Лари')
-        is_messy = False
-        worker.energy -= 30
+        if is_messy is True:
+            print('Петрович вынес весь мусор Лари')
+            worker.energy -= 20
+        else:
+             print('В доме и так чисто')
     elif choice == "0":
         break
     print('ночь в коммуналке')
@@ -124,7 +155,15 @@ while True:
     for r in roommates:
         r.live_day()
         if is_messy:
-            r.react_to_mess()
-
+            if Robo.hunger > 30:
+                Robo.react_to_mess()
+                is_messy = False
+            else:
+                worker.react_to_mess()
+                lazy_guy.react_to_mess()
+                    
     day += 1
+    a -= 1
+    if a == 2:
+        a = 10
 print('игра завершена')
