@@ -20,6 +20,7 @@ l_blue = (32, 178, 170)
 
 # рисование на объекте поверхности
 # машина
+
 displaysurf.fill(blue)
 pygame.draw.rect(displaysurf, red, (175, 200, 150, 50))
 pygame.draw.circle(displaysurf, gray, (200, 250), 15, 0)
@@ -38,11 +39,6 @@ pygame.draw.line(displaysurf, black, (195, 95), (205, 95))
 # домек
 pygame.draw.rect(displaysurf, green, (280, 100, 50, 50), 50)
 pygame.draw.polygon(displaysurf, l_blue, ((280, 100), (305, 60), (330, 100)))
-
-
-
-
-
 
 
 while True:
